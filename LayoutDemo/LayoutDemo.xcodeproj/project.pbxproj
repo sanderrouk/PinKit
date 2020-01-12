@@ -11,7 +11,7 @@
 		A4033FAB23CA1E8C008CB922 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4033FAA23CA1E8C008CB922 /* ViewController.swift */; };
 		A4033FB023CA1E8C008CB922 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4033FAF23CA1E8C008CB922 /* Assets.xcassets */; };
 		A4033FB323CA1E8C008CB922 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4033FB123CA1E8C008CB922 /* LaunchScreen.storyboard */; };
-		A4033FBB23CA1ED9008CB922 /* UIView+Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4033FBA23CA1ED9008CB922 /* UIView+Pin.swift */; };
+		A4033FBB23CA1ED9008CB922 /* UIView+PinKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4033FBA23CA1ED9008CB922 /* UIView+PinKit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,7 +21,7 @@
 		A4033FAF23CA1E8C008CB922 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A4033FB223CA1E8C008CB922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A4033FB423CA1E8C008CB922 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A4033FBA23CA1ED9008CB922 /* UIView+Pin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Pin.swift"; sourceTree = "<group>"; };
+		A4033FBA23CA1ED9008CB922 /* UIView+PinKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+PinKit.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +67,7 @@
 		A4033FBD23CA2A34008CB922 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				A4033FBA23CA1ED9008CB922 /* UIView+Pin.swift */,
+				A4033FBA23CA1ED9008CB922 /* UIView+PinKit.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -144,7 +144,7 @@
 			files = (
 				A4033FAB23CA1E8C008CB922 /* ViewController.swift in Sources */,
 				A4033FA723CA1E8C008CB922 /* AppDelegate.swift in Sources */,
-				A4033FBB23CA1ED9008CB922 /* UIView+Pin.swift in Sources */,
+				A4033FBB23CA1ED9008CB922 /* UIView+PinKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

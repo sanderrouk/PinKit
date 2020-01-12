@@ -802,6 +802,4 @@ public extension Collection where Element == LayoutEdge {
 
         return edges
     }
-
-    // swiftlint:disable:next file_length
-}
+} //swiftlint:disable:this file_length
