@@ -279,12 +279,30 @@ public extension UIView {
     ///  the following order: Top, Leading, Trailing, Bottom.
     ///
     @discardableResult
-    func pinEdgesToSuperviewEdges(
-        _ edges: [LayoutEdge] = .all,
+    func pinEdgesToSuperviewEdges(with insets: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+        let superview = unwrapSuperviewOrFailure()
+        return pinEdges(toEdges: .all, of: superview, insets: insets)
+    }
+
+    /// Sets the view's edges equal to the same edges of the view's superview.
+    ///
+    /// - Parameters:
+    ///     - edges: The specific edges of the view which will be constrained, defaults to All edges.
+    ///     - insets: The edge insets adding spacing between the edge insets. An edge set of [.top, .bottom]
+    ///     with an inset set of .top(10) + .bottom(10) would result in constraints where the top edge
+    ///     of the view being constraint is 10 units below the target view and the bottom is above the target
+    ///     view by 10 units.
+    ///
+    /// - Returns: An array of  `NSLayoutConstraint` matching the appropriate layout constraints in
+    ///  the following order: Top, Leading, Trailing, Bottom.
+    ///
+    @discardableResult
+    func pinEdges(
+        toSuperviewEdges edges: [LayoutEdge],
         with insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
-        return pinEdges(edges, to: superview, insets: insets)
+        return pinEdges(toEdges: edges, of: superview, insets: insets)
     }
 
     /// Sets the view's edge equal to the same edge of the view's superview.
@@ -305,8 +323,8 @@ public extension UIView {
     /// - Returns: `NSLayoutConstraint` matching the appropriate layout constraint generated.
     ///
     @discardableResult
-    func pinEdgeToSuperview(
-        edge: LayoutEdge,
+    func pinEdge(
+        toSuperviewEdge edge: LayoutEdge,
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
         constant: CGFloat = 0,
@@ -339,8 +357,8 @@ public extension UIView {
     ///
     @discardableResult
     func pinEdges(
-        _ edges: [LayoutEdge],
-        to view: UIView,
+        toEdges edges: [LayoutEdge],
+        of view: UIView,
         insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         return edges.map({ edge in
@@ -373,8 +391,8 @@ public extension UIView {
     ///
     @discardableResult
     func pinEdge(
-        _ edge: LayoutEdge,
-        to view: UIView,
+        toEdge edge: LayoutEdge,
+        of view: UIView,
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
         constant: CGFloat = 0,
@@ -427,6 +445,253 @@ public extension UIView {
             attribute: translateToAttributeFrom(edge: edge),
             relatedBy: relation,
             toItem: view,
+            attribute: translateToAttributeFrom(edge: viewEdge),
+            multiplier: multiplier,
+            constant: constant
+        )
+
+        constraint.priority = priority
+        constraint.isActive = true
+        return constraint
+    }
+
+    /// Constrains edges of the view to the edges of the view's superview's safe area layout guide.
+    ///
+    /// - Parameters:
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdgesToSuperviewSafeAreaEdges(
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        with insets: UIEdgeInsets = .zero
+    ) -> [NSLayoutConstraint] {
+        let superview = unwrapSuperviewOrFailure()
+        return pinEdges(
+            toSafeAreaEdges: .all,
+            of: superview,
+            relation: relation,
+            priority: priority,
+            with: insets
+        )
+    }
+
+    /// Constrains edges of the view to the matching edges of the view's superview's safe area layout guide.
+    ///
+    /// - Parameters:
+    ///     - edges: Edges which will be constraint
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - insets: The buffers for all sides.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdges(
+        toSuperviewSafeAreaEdges edges: [LayoutEdge],
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        with insets: UIEdgeInsets = .zero
+    ) -> [NSLayoutConstraint] {
+        let superview = unwrapSuperviewOrFailure()
+        return edges.map({ edge in
+            pinEdge(
+                edge,
+                toSafeArea: edge,
+                of: superview,
+                relation: relation,
+                priority: priority,
+                constant: translateToConstantFrom(inset: insets, for: edge)
+            )
+        })
+    }
+
+    /// Constrains edge of the view to the matching edge of the view's superview's safe area layout guide.
+    ///
+    /// - Parameters:
+    ///     - edge: Edge which will be constraint
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdge(
+        toSuperviewSafeAreaEdge edge: LayoutEdge,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        constant: CGFloat = 0,
+        multiplier: CGFloat = 1
+    ) -> NSLayoutConstraint {
+        let superview = unwrapSuperviewOrFailure()
+
+        return pinEdge(
+            edge,
+            toSafeArea: edge,
+            of: superview,
+            relation: relation,
+            priority: priority,
+            constant: constant,
+            multiplier: multiplier
+        )
+    }
+
+    /// Constrains edges of the view to the edges of the target view's safe area layout guide
+    ///
+    /// - Parameters:
+    ///     - view: Target view to which's safe area layout guide will be constraint to.
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdgesToSafeAreaEdges(
+        of view: UIView,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        with insets: UIEdgeInsets = .zero
+    ) -> [NSLayoutConstraint] {
+        return pinEdges(
+            toSafeAreaEdges: .all,
+            of: view,
+            relation: relation,
+            priority: priority,
+            with: insets
+        )
+    }
+
+    /// Constrains edges of the view to the specified edges of the target view's safe area layout guide
+    ///
+    /// - Parameters:
+    ///     - edges: Edges which will be constraint to the same edges of the target view's safe area layout guide.
+    ///     - view: Target view to which's safe area layout guide will be constraint to.
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdges(
+        toSafeAreaEdges edges: [LayoutEdge],
+        of view: UIView,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        with insets: UIEdgeInsets = .zero
+    ) -> [NSLayoutConstraint] {
+        return edges.map({ edge in
+            pinEdge(
+                edge,
+                toSafeArea: edge,
+                of: view,
+                relation: relation,
+                priority: priority,
+                constant: translateToConstantFrom(inset: insets, for: edge)
+            )
+        })
+    }
+
+    /// Constrains edge of view to the specified edge of the target view's safe area layout guide
+    ///
+    /// - Parameters:
+    ///     - edge: Edge which will be constraint to the same edge of the target view's safe area layout guide.
+    ///     - view: Target view to which's safe area layout guide will be constraint to.
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdge(
+        toSafeAreaEdge edge: LayoutEdge,
+        of view: UIView,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        constant: CGFloat = 0,
+        multiplier: CGFloat = 1
+    ) -> NSLayoutConstraint {
+        return pinEdge(
+            edge,
+            toSafeArea: edge,
+            of: view,
+            relation: relation,
+            priority: priority,
+            constant: constant,
+            multiplier: multiplier
+        )
+    }
+
+    /// Constrains edge of the view to the specified edge of the target view's safe area layout guide
+    ///
+    /// - Parameters:
+    ///     - edge: Edge which will be constraint
+    ///     - viewEdge: Target edge of the target view's safe area layout guide
+    ///     - view: Target view to which's safe area layout guide will be constraint to.
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
+    ///     - constant: A constant added to the resulting constraint adjusting it along the appropriate axis.
+    ///     - multiplier: A multiplier adjusting the created constraint.
+    ///
+    /// - Returns: `NSLayoutConstraint` created by matching the provided requirements.
+    ///
+    @available(iOS 11.0, *)
+    @discardableResult
+    func pinEdge(
+        _ edge: LayoutEdge,
+        toSafeArea viewEdge: LayoutEdge,
+        of view: UIView,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required,
+        constant: CGFloat = 0,
+        multiplier: CGFloat = 1
+    ) -> NSLayoutConstraint {
+        translatesAutoresizingMaskIntoConstraints = false
+
+        let constraint = NSLayoutConstraint(
+            item: self,
+            attribute: translateToAttributeFrom(edge: edge),
+            relatedBy: relation,
+            toItem: view.safeAreaLayoutGuide,
             attribute: translateToAttributeFrom(edge: viewEdge),
             multiplier: multiplier,
             constant: constant

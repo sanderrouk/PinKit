@@ -9,6 +9,7 @@ class ViewController: UIViewController {
     private let yellowSquare = UIView()
     private let tealQuadlateral = UIView()
     private let pinkBlob = UIView()
+    private let button = UIButton(type: .system)
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -37,6 +38,8 @@ class ViewController: UIViewController {
 
         pinkBlob.backgroundColor = .systemPink
         pinkBlob.layer.cornerRadius = 25
+
+        button.setTitle("Press me", for: .normal)
     }
 
     private func layout() {
@@ -55,7 +58,7 @@ class ViewController: UIViewController {
         // 20 units away from right edge
         view.addSubview(orangeSquare)
         orangeSquare.alignAxisToSuperview(axis: .horizontal)
-        orangeSquare.pinEdgeToSuperview(edge: .right, constant: -20)
+        orangeSquare.pinEdge(toSuperviewEdge: .right, constant: -20)
         orangeSquare.setDimensions(to: .equalSides(of: 50))
 
         // Green square pinned to orange squares edges with insets of 20
@@ -73,12 +76,25 @@ class ViewController: UIViewController {
         // Pinned to superview's all edges except right, with insets of 20
         // width set to 50
         view.addSubview(tealQuadlateral)
-        tealQuadlateral.pinEdgesToSuperviewEdges(.all(except: .right), with: .uniform(20))
+        tealQuadlateral.pinEdges(toSuperviewEdges: .all(except: .right), with: .uniform(20))
         tealQuadlateral.setDimension(.width, toSize: 50)
 
+        // Pink blob matching its superview's dimensions, centered in superview
         tealQuadlateral.addSubview(pinkBlob)
         pinkBlob.matchDimensionsToSuperview()
         pinkBlob.centerInSuperview()
+
+        // A button with undefined width and height of 30 centered on vertical axis,
+        // pinned to superview safe area bottom
+        view.addSubview(button)
+        button.setDimension(.height, toSize: 30)
+        button.alignAxisToSuperview(axis: .vertical)
+
+        if #available(iOS 11.0, *) {
+            button.pinEdge(toSuperviewSafeAreaEdge: .bottom)
+        } else {
+            button.pinEdge(toSuperviewEdge: .bottom)
+        }
     }
 
 }
