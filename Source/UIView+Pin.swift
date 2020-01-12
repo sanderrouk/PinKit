@@ -19,19 +19,21 @@
 
 import UIKit
 
-// Mark: Layout code
-public extension UIView {
+// MARK: Layout code
 
+public extension UIView {
     /// Centers the view in its superview.
-    ///
+    /// - Parameter priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
     ///  - Returns : Array of `NSLayoutConstraint` which containts two elements.
     /// First one is the X axis anchor and the second one is the Y axis anchor.
     @discardableResult
-    func centerInSuperview() -> [NSLayoutConstraint] {
+    func centerInSuperview(priority: UILayoutPriority = .required) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
         return [
-            alignAxisTo(axis: .vertical, ofView: superview),
-            alignAxisTo(axis: .horizontal, ofView: superview)
+            alignAxisTo(axis: .vertical, ofView: superview, priority: priority),
+            alignAxisTo(axis: .horizontal, ofView: superview, priority: priority)
         ]
     }
 
@@ -111,14 +113,25 @@ public extension UIView {
 
     /// Sets the view's specified dimensions to the specified size.
     ///
-    /// - Parameter size: The specific height and widht which the dimensions will be set to.
+    /// - Parameters:
+    ///     - size: The specific height and widht which the dimensions will be set to.
+    ///     - relation: The relation between the first attribute and the modified second attribute
+    ///      in a constraint.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
     ///
-    /// - Returns: An array of`NSLayoutConstraint` matching the appropriate anchors for the size constraints. The order is height, then width.
+    /// - Returns: An array of`NSLayoutConstraint` matching the appropriate anchors for the size constraints.
+    ///  The order is height, then width.
     @discardableResult
-    func setDimensions(to size: CGSize) -> [NSLayoutConstraint] {
+    func setDimensions(
+        to size: CGSize,
+        relation: NSLayoutConstraint.Relation = .equal,
+        priority: UILayoutPriority = .required
+    ) -> [NSLayoutConstraint] {
         return [
-            setDimension(.height, toSize: size.height),
-            setDimension(.width, toSize: size.width)
+            setDimension(.height, toSize: size.height, relation: relation, priority: priority),
+            setDimension(.width, toSize: size.width, relation: relation, priority: priority)
         ]
     }
 
@@ -288,6 +301,9 @@ public extension UIView {
     ///
     /// - Parameters:
     ///     - edges: The specific edges of the view which will be constrained, defaults to All edges.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
     ///     - insets: The edge insets adding spacing between the edge insets. An edge set of [.top, .bottom]
     ///     with an inset set of .top(10) + .bottom(10) would result in constraints where the top edge
     ///     of the view being constraint is 10 units below the target view and the bottom is above the target
@@ -299,10 +315,11 @@ public extension UIView {
     @discardableResult
     func pinEdges(
         toSuperviewEdges edges: [LayoutEdge],
+        priority: UILayoutPriority = .required,
         with insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
-        return pinEdges(toEdges: edges, of: superview, insets: insets)
+        return pinEdges(toEdges: edges, of: superview, priority: priority, insets: insets)
     }
 
     /// Sets the view's edge equal to the same edge of the view's superview.
@@ -347,6 +364,9 @@ public extension UIView {
     /// - Parameters:
     ///     - edges: The specific edges of the view which will be constrained.
     ///     - view: Target view which will be constrained to.
+    ///     - priority: The layout priority is used to indicate to the constraint-based layout system which
+    ///      constraints are more important, allowing the system to make appropriate tradeoffs when
+    ///      satisfying the constraints of the system as a whole.
     ///     - insets: The edge insets adding spacing between the edge insets. An edge set of [.top, .bottom]
     ///     with an inset set of .top(10) + .bottom(10) would result in constraints where the top edge
     ///     of the view being constraint is 10 units below the target view and the bottom is above the target
@@ -359,16 +379,18 @@ public extension UIView {
     func pinEdges(
         toEdges edges: [LayoutEdge],
         of view: UIView,
+        priority: UILayoutPriority = .required,
         insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
-        return edges.map({ edge in
+        return edges.map { edge in
             pinEdge(
                 edge,
                 to: edge,
                 of: view,
+                priority: priority,
                 constant: translateToConstantFrom(inset: insets, for: edge)
             )
-        })
+        }
     }
 
     /// Sets the view's edge equal to the same edge of another view.
@@ -507,7 +529,7 @@ public extension UIView {
         with insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
-        return edges.map({ edge in
+        return edges.map { edge in
             pinEdge(
                 edge,
                 toSafeArea: edge,
@@ -516,7 +538,7 @@ public extension UIView {
                 priority: priority,
                 constant: translateToConstantFrom(inset: insets, for: edge)
             )
-        })
+        }
     }
 
     /// Constrains edge of the view to the matching edge of the view's superview's safe area layout guide.
@@ -610,7 +632,7 @@ public extension UIView {
         priority: UILayoutPriority = .required,
         with insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
-        return edges.map({ edge in
+        return edges.map { edge in
             pinEdge(
                 edge,
                 toSafeArea: edge,
@@ -619,7 +641,7 @@ public extension UIView {
                 priority: priority,
                 constant: translateToConstantFrom(inset: insets, for: edge)
             )
-        })
+        }
     }
 
     /// Constrains edge of view to the specified edge of the target view's safe area layout guide
@@ -719,7 +741,6 @@ public extension UIView {
     }
 
     private func translateToConstantFrom(inset: UIEdgeInsets, for edge: LayoutEdge) -> CGFloat {
-
         let isLeftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
         switch edge {
         case .top: return inset.top
@@ -732,10 +753,9 @@ public extension UIView {
     }
 }
 
-// Mark: Types provided by the extension
+// MARK: Types provided by the extension
 
 public enum LayoutAxis {
-
     /// Corresponds to `NSLayoutConstraint.Attribute.centerY`
     case horizontal
 
@@ -744,7 +764,6 @@ public enum LayoutAxis {
 }
 
 public enum LayoutDimension {
-
     /// Corresponds to `NSLayoutConstraint.Attribute.height`
     case height
 
@@ -761,7 +780,8 @@ public enum LayoutEdge {
     case bottom
 }
 
-// Mark: Extensions
+// MARK: Extensions
+
 public extension Collection where Element == LayoutEdge {
     static var all: [LayoutEdge] {
         return [.top, .leading, .trailing, .bottom]
@@ -782,4 +802,6 @@ public extension Collection where Element == LayoutEdge {
 
         return edges
     }
+
+    // swiftlint:disable:next file_length
 }
