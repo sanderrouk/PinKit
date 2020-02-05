@@ -292,7 +292,7 @@ public extension UIView {
     ///  the following order: Top, Leading, Trailing, Bottom.
     ///
     @discardableResult
-    func pinEdgesToSuperviewEdges(with insets: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+    func pinEdgesToSuperviewEdges(insets: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
         return pinEdges(toEdges: .all, of: superview, insets: insets)
     }
@@ -316,7 +316,7 @@ public extension UIView {
     func pinEdges(
         toSuperviewEdges edges: [LayoutEdge],
         priority: UILayoutPriority = .required,
-        with insets: UIEdgeInsets = .zero
+        insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
         return pinEdges(toEdges: edges, of: superview, priority: priority, insets: insets)
@@ -495,7 +495,7 @@ public extension UIView {
     func pinEdgesToSuperviewSafeAreaEdges(
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
-        with insets: UIEdgeInsets = .zero
+        insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
         return pinEdges(
@@ -503,7 +503,7 @@ public extension UIView {
             of: superview,
             relation: relation,
             priority: priority,
-            with: insets
+            insets: insets
         )
     }
 
@@ -526,7 +526,7 @@ public extension UIView {
         toSuperviewSafeAreaEdges edges: [LayoutEdge],
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
-        with insets: UIEdgeInsets = .zero
+        insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         let superview = unwrapSuperviewOrFailure()
         return edges.map { edge in
@@ -597,14 +597,14 @@ public extension UIView {
         of view: UIView,
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
-        with insets: UIEdgeInsets = .zero
+        insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         return pinEdges(
             toSafeAreaEdges: .all,
             of: view,
             relation: relation,
             priority: priority,
-            with: insets
+            insets: insets
         )
     }
 
@@ -630,7 +630,7 @@ public extension UIView {
         of view: UIView,
         relation: NSLayoutConstraint.Relation = .equal,
         priority: UILayoutPriority = .required,
-        with insets: UIEdgeInsets = .zero
+        insets: UIEdgeInsets = .zero
     ) -> [NSLayoutConstraint] {
         return edges.map { edge in
             pinEdge(

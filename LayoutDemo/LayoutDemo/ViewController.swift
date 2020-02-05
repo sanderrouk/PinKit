@@ -63,7 +63,7 @@ class ViewController: UIViewController {
 
         // Green square pinned to orange squares edges with insets of 20
         orangeSquare.addSubview(greenSquare)
-        greenSquare.pinEdgesToSuperviewEdges(with: .uniform(20))
+        greenSquare.pinEdgesToSuperviewEdges(insets: .uniform(20))
 
         // Yellow square matching green squares dimensions aligned to orange square's
         // vertical axis and placed 20 units above orange square
@@ -76,7 +76,7 @@ class ViewController: UIViewController {
         // Pinned to superview's all edges except right, with insets of 20
         // width set to 50
         view.addSubview(tealQuadlateral)
-        tealQuadlateral.pinEdges(toSuperviewEdges: .all(except: .right), with: .uniform(20))
+        tealQuadlateral.pinEdges(toSuperviewEdges: .all(except: .right), insets: .uniform(20))
         tealQuadlateral.setDimension(.width, toSize: 50)
 
         // Pink blob matching its superview's dimensions, centered in superview
