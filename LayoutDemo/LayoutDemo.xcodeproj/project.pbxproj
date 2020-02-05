@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,7 @@
 		A4033FB023CA1E8C008CB922 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4033FAF23CA1E8C008CB922 /* Assets.xcassets */; };
 		A4033FB323CA1E8C008CB922 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4033FB123CA1E8C008CB922 /* LaunchScreen.storyboard */; };
 		A4033FBB23CA1ED9008CB922 /* UIView+PinKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4033FBA23CA1ED9008CB922 /* UIView+PinKit.swift */; };
+		A4B734A023EB5BC200BFD053 /* PinKit in Frameworks */ = {isa = PBXBuildFile; productRef = A4B7349F23EB5BC200BFD053 /* PinKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4B734A023EB5BC200BFD053 /* PinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +90,9 @@
 			dependencies = (
 			);
 			name = LayoutDemo;
+			packageProductDependencies = (
+				A4B7349F23EB5BC200BFD053 /* PinKit */,
+			);
 			productName = LayoutDemo;
 			productReference = A4033FA323CA1E8C008CB922 /* LayoutDemo.app */;
 			productType = "com.apple.product-type.application";
@@ -116,6 +121,9 @@
 				Base,
 			);
 			mainGroup = A4033F9A23CA1E8B008CB922;
+			packageReferences = (
+				A4B7349E23EB5BC200BFD053 /* XCRemoteSwiftPackageReference "PinKit" */,
+			);
 			productRefGroup = A4033FA423CA1E8C008CB922 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -334,6 +342,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A4B7349E23EB5BC200BFD053 /* XCRemoteSwiftPackageReference "PinKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sanderrouk/PinKit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A4B7349F23EB5BC200BFD053 /* PinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A4B7349E23EB5BC200BFD053 /* XCRemoteSwiftPackageReference "PinKit" */;
+			productName = PinKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A4033F9B23CA1E8B008CB922 /* Project object */;
 }
