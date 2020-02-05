@@ -2,9 +2,26 @@
 PinKit is an UIKit extension meant to be used in iOS and iPadOS projects. The purpose of this extension is to provide developers with a simple way to write layout code without having to  go through the trouble of having to use UIKit's cumbersome NSLayoutConstraint and anchor constraint syntax. The syntax of this extension is inspired by [PureLayout](https://github.com/PureLayout/PureLayout). This extension only offers basic functionality such as constraining edges, dimensions and axis. The extension also supports setting more specific rules when creating constraints using `NSLayoutConstraint.Relation` and `UILayoutPriority` as well as the standard constants and multipliers. If a more robust framework is required it is recommended to use something like [PureLayout](https://github.com/PureLayout/PureLayout) instead. This extension is intended to be used as a drop in extension rather a framework. What this means is that while this extension will not be updated automatically using a dependency system it also does not cause extra compile time issues in CI/CD services. It also enables developers to tweak this framework to their liking as it is built 100% in swift.
 
 ## Installation
-Installing the extension right now is simple. Take the source of the project from the `Source` directory and add it to your project. We recommend naming the file `UIView+PinKit.swift`. This name indicates that this file contains extensions which affect the `UIView` class and that this extension has to do with `PinKit`. After you have done that, you can use PinKit from your views.
 
-The kit also adds a public collectio extension into the project, however this will only affect collections where the elements are of type `LayoutEdge` which is a type provided by the kit. If however this extension is undesired the access modifier of this extension can be set to `private` to avoid exposing this extension to the rest of the codebase.
+### Using the Extension
+The simplest way to avoid using any additional dependencies in your project is by taking the source code from `Sources/PinKit/UIView+PinKit.swift` and adding it into your project. The benefits of this method are that this is fast to do, you can easily alter the source code if necessary, you do not need any dependency management tools, CI/CD build times are basically unaffected. The downsides are that using this method the source code does not get updated when the project is updated.
+
+### Swift Package Manager
+As of Xcode 11 SPM integrates nicely with Xcode. This means that installing dependencies with Xcode support is super easy. To add the dependency using Swift Package Manager do the following steps:
+
+1. Select the desired project and choose the `Swift Packages` tab of your project.
+2. Tap on the + button.
+3. Enter `https://github.com/sanderrouk/PinKit.git` onto the search bar and click next.
+4. Choose the `Version` option leaving the selection on `Up to Next Major` option.
+5. Click Next.
+6. Click Finish.
+7. Either create a separate file for it or add `import PinKit` in the file where you want to use it.
+
+### Carthage
+1. Add `github "sanderrouk/PinKit" ~> 1.0.0` project to your Cartfile.
+2. Run `$ carthage update --platform ios`, this library does not support building for platforms other than iOS.
+3. [Do the additional steps required for carthage frameworks.](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application)
+4. Either create a separate file for it or add `import PinKit` in the file where you want to use it.
 
 ## Usage
 PinKit works just like any other constraint based framework out there by extending the functionality of Swift's views. To use it's functionality you call the methods on the views. There is an example project included in this repository which can be consulted for a better overview of how the kit can be used. This is a short snippet from the example project:
@@ -65,10 +82,10 @@ PinKit works just like any other constraint based framework out there by extendi
 ```
 
 ## Roadmap
-Currently there are plans to add support for margin based constraints and to possibly make it Swift Package Manager usable. Other than that there is no plan to make this kit any more complicated as there are pleanty of tools out there which already accomplish this. This kit is meant to be a lightweight simple layout solution which does not require dependencies.
+Currently there are plans to add support for margin based constraints. Other than that there is no plan to make this kit any more complicated as there are pleanty of tools out there which already accomplish this.
 
 ## License
 The project is under the MIT licence meaning you can use this project however you want.
 
 ## Project status
-This project is considered feature complete, however a few additional expansions might be added at later dates as well as API changes to allow more granular control with fewer lines of code.
+This project is considered feature complete. However as Apple will release changes to UIKit this framework will be updated as well.
