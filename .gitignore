@@ -41,10 +41,8 @@ Package.resolved
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
 
 ## Xcode Patch
-*.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
